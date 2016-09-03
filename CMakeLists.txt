@@ -9,6 +9,6 @@ include_directories(../../dev/docopt)
 link_directories(../../dev/lua/)
 link_directories(../../dev/docopt/)
 
-set(SOURCE_FILES main.cpp Script.cpp Script.h Server.cpp Server.h Buffer.cpp Buffer.h BufferLua.h BufferLua.cpp Registry.cpp Registry.h RegistryLua.h RegistryLua.cpp ServerLua.h ServerLua.cpp BindLua.h BindLua.cpp)
+set(SOURCE_FILES main.cpp Server.cpp Server.h Buffer.cpp Buffer.h BufferLua.h BufferLua.cpp Registry.cpp Registry.h RegistryLua.h RegistryLua.cpp ServerLua.h ServerLua.cpp BindLua.h BindLua.cpp ScriptManager.cpp ScriptManager.h)
 add_executable(sb_emulator ${SOURCE_FILES})
-target_link_libraries(sb_emulator lua53 dl boost_system)
+target_link_libraries(sb_emulator lua53 dl boost_system docopt)

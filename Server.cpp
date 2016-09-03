@@ -9,7 +9,7 @@
 
 #include "Buffer.h"
 #include "Server.h"
-
+#include "ScriptManager.h"
 
 
 //
@@ -28,10 +28,12 @@ using boost::asio::ip::udp;
 
 const unsigned MAX_PACKET_LENGTH = 10000;
 
+
+
 Server::Server(boost::asio::io_service &io_service, uint16_t port)
 : _socket(io_service, udp::endpoint(udp::v4(), port)){
     _buffer = new char[MAX_PACKET_LENGTH];
-
+    _script_manager = nullptr;
     receive();
 }
 
@@ -42,9 +44,11 @@ void Server::receive() {
             boost::asio::buffer(_buffer, MAX_PACKET_LENGTH), _sender_endpoint,
             [self, this](boost::system::error_code ec, std::size_t bytes_recvd)
             {
+                assert(_script_manager);
                 if (!ec && bytes_recvd > 1)
                 {
                     Buffer::Ptr buf = std::make_shared<Buffer>(*((uint16_t*)_buffer), &_buffer[2], bytes_recvd - 2);
+                    _script_manager->loadScript(Buffer::Ptr());
                 }
                 else
                 {
@@ -76,5 +80,10 @@ bool Server::sendCommand(Buffer::Ptr buffer) {
 
 Server::~Server() {
     delete[] _buffer;
+}
+
+void Server::setScriptManager(ScriptManager *sc)
+{
+    _script_manager = sc;
 }
 

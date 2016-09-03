@@ -5,6 +5,7 @@
 #include "BufferLua.h"
 #include <sol.hpp>
 #include "Buffer.h"
+#include <docopt.h>
 
 bool luaBindBuffer(sol::state& state) {
 

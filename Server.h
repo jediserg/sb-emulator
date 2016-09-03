@@ -9,6 +9,9 @@
 #include <memory>
 #include "Buffer.h"
 
+
+class ScriptManager;
+
 class Server :public std::enable_shared_from_this<Server> {
 public:
     Server(boost::asio::io_service& io_service, uint16_t port);
@@ -16,13 +19,14 @@ public:
     virtual ~Server();
 
     bool sendCommand(Buffer::Ptr buffer);
+    void setScriptManager(ScriptManager *sc);
 
 private:
     boost::asio::ip::udp::socket _socket;
     boost::asio::ip::udp::endpoint _sender_endpoint;
 
     char* _buffer;
-
+    ScriptManager* _script_manager;
     void receive();
 };
 
