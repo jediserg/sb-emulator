@@ -24,6 +24,6 @@ bool luaBindRegistry(sol::state &state, Registry &registry) {
                                 "getString", &Registry::getString
     );
 
-    state["Registry"] = &registry;
+    state["REG"] = &registry;
 }
 

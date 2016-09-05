@@ -38,17 +38,16 @@ Server::Server(boost::asio::io_service &io_service, uint16_t port)
 }
 
 void Server::receive() {
-    auto self = shared_from_this();
-
     _socket.async_receive_from(
             boost::asio::buffer(_buffer, MAX_PACKET_LENGTH), _sender_endpoint,
-            [self, this](boost::system::error_code ec, std::size_t bytes_recvd)
+            [this](boost::system::error_code ec, std::size_t bytes_recvd)
             {
                 assert(_script_manager);
                 if (!ec && bytes_recvd > 1)
                 {
                     Buffer::Ptr buf = std::make_shared<Buffer>(*((uint16_t*)_buffer), &_buffer[2], bytes_recvd - 2);
-                    _script_manager->loadScript(Buffer::Ptr());
+                    _script_manager->loadScript(buf);
+                    receive();
                 }
                 else
                 {
@@ -58,15 +57,13 @@ void Server::receive() {
 }
 
 bool Server::sendCommand(Buffer::Ptr buffer) {
-    auto self = shared_from_this();
-
     std::vector<char> data(buffer->m_buffer.size() + 2);
     *(reinterpret_cast<uint16_t*>(data.data())) = buffer->getKop();
 
     std::copy(buffer->m_buffer.begin(), buffer->m_buffer.end(), data.begin());
 
     _socket.async_send_to(boost::asio::buffer(data), _sender_endpoint,
-                          [self, this] (boost::system::error_code ec, std::size_t bytes_transfered)
+                          [this] (boost::system::error_code ec, std::size_t bytes_transfered)
                           {
                               if (!ec && bytes_transfered > 0)
                               {

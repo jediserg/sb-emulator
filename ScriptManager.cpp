@@ -20,7 +20,7 @@ bool ScriptManager::loadScript(Buffer::Ptr buffer)
     sol::state state;
 
     std::stringstream full_name;
-    full_name << _registry.getString("path") << "/" << _registry.getString("device") << "/" << buffer->getKop() << ".lua";
+    full_name << _registry.getString("path") << _registry.getString("device") << "/" << std::hex << buffer->getKop() << ".lua";
 
     state.open_libraries(sol::lib::base, sol::lib::package);
 
